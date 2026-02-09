@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KarteiKartenApp für FIAE</title>
+
+  <!-- JS für die Themen -->
+  <script src="themen.js"></script>
+
+  <!-- JS für die Funktionen -->
+  <script src="script.js"></script>
+
+  <!-- Manifest für PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2196F3">
+
+  <!-- Onsen UI CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/onsenui/css/onsenui.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/onsenui/css/onsen-css-components.min.css">
+
+  <!-- Onsen UI JavaScript -->
+  <script src="onsenui.min.js"></script>
+  <style>
+    ::-webkit-scrollbar {
+      display: block !important;
+      width: 5px;
+      height: 0px;
+    }
+
+    .flip-card {
+      background-color: transparent;
+      width: 300px;
+      height: 200px;
+      margin: 10px auto;
+      perspective: 1000px;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+      cursor: pointer;
+    }
+
+    .flip-card-front,
+    .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    .flip-card-back {
+      transform: rotateY(180deg);
+      background-color: #e7151546;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Code sauber formatieren: SHIFT + ALT + F -->
+
+  <!--
+  Lokales Testen dieser App auf dem Smartphone (offlinefähig mit ngrok)
+
+  1. Live Server in VS Code starten (z. B. mit der Erweiterung "Live Server")
+     → Adresse z. B. http://127.0.0.1:5500/onsentest.html
+
+  2. ngrok installieren (https://ngrok.com), und im Terminal ausführen:
+     ngrok http 5500 -> Eventuell vorher einloggen, und den Befehl mit dem Token ausführen
+	 -> Muss im Ordner von ngronk sein (C:\ngronk)
+	 -> 5500 -> Port vom Live Server
+	 -> C:\ngrok\ngrok.exe http 5500 muss man eingeben! (mit dem C: ....)
+
+  3. ngrok gibt dir eine öffentliche HTTPS-Adresse wie:
+     https://abcd1234.ngrok.io
+
+  4. Diese Adresse im Handy-Browser öffnen → dann über das Menü
+     "Zum Startbildschirm hinzufügen" wählen (PWA-Icon)
+
+  5. Beim ersten Öffnen wird ein Service Worker installiert.
+     Danach kannst du die Seite offline starten (wenn alles gecacht ist).
+
+  Hinweis: Wenn du den Browser-Cache/Websitedaten auf dem Handy löschst,
+  geht die Offline-Funktion verloren!
+	-->
+
+  <ons-page>
+    <ons-toolbar>
+      <div class="center">KarteiKartenApp für FIAE</div>
+    </ons-toolbar>
+
+    <ons-tabbar swipeable position="top">
+      <ons-tab page="seite1.html" label="Start" icon="md-home"></ons-tab>
+      <ons-tab page="seite2.html" label="Suchen" icon="md-search"></ons-tab>
+      <ons-tab page="seite3.html" label="Themen" icon="list"></ons-tab>
+      <ons-tab page="seite4.html" label="Karte erstellen" icon="md-card"></ons-tab>
+    </ons-tabbar>
+
+    <template id="seite1.html">
+      <ons-page>
+        <div style="padding: 20px;">
+          <h1 style="text-align: center;">Willkommen zur FIAE Karteikarten-App!</h1>
+          <p style="text-align: center;">Diese App hilft dir, dich optimal auf deine Abschlussprüfung Teil 2 (AP2) als
+            Fachinformatiker für Anwendungsentwicklung vorzubereiten.</p>
+
+          <hr style="margin: 20px 0;">
+
+          <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+            <h3>🔎 Karteikarten durchsuchen</h3>
+            <p>Auf der Registerkarte "Suchen" (das Lupen-Symbol oben) findest du eine Übersicht aller erstellten
+              Karteikarten. Du kannst das Suchfeld verwenden, um nach Begriffen in Fragen, Antworten oder Überschriften
+              zu suchen. Klicke auf eine Zeile, um die vollständige Karteikarte anzuzeigen. Hier kannst du auch die
+              angezeigte Karteikarte löschen.</p>
+          </div>
+
+          <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+            <h3>➕ Neue Karteikarten erstellen</h3>
+            <p>Unter der Registerkarte "Karte erstellen" (das Karten-Symbol oben) kannst du neue Karteikarten
+              hinzufügen. Wähle zuerst ein passendes Unterthema aus dem Dropdown-Menü. Gib dann eine Überschrift, die
+              Frage und die Antwort für deine Karteikarte ein und klicke auf "💾 Karteikarte speichern". Es wird
+              empfohlen sich
+              bei den Überschriften an den Inhalten des Prüfungskatalog zu orientieren.</p>
+          </div>
+
+          <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+            <h3>📂 Themenübersicht (basierend auf AP2)</h3>
+            <p>Die Registerkarte "Themen" (das Listen-Symbol oben) zeigt die Haupt- und Unterthemen, die sich am
+              Prüfungskatalog für Fachinformatiker Anwendungsentwicklung (AP2) orientieren. Wähle ein Thema, um die
+              zugehörigen Karteikarten anzuzeigen.</p>
+          </div>
+
+          <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+            <h3>⬇️ Karteikarten exportieren</h3>
+            <p>Auf der Seite "Karte erstellen" findest du einen Button "⬇️ Karteikarten exportieren". Beim Klicken auf
+              diesen Button wird eine JSON-Datei heruntergeladen, die alle deine gespeicherten Karteikarten enthält. So
+              kannst du deine Karten sichern oder mit anderen teilen. Diese kannst du natürlich auch auf deinen PC
+              bearbeiten und ergänzen.</p>
+          </div>
+
+          <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+            <h3>⬆️ Karteikarten importieren</h3>
+            <p>Ebenfalls auf der Seite "Karte erstellen" gibt es einen Button mit einem Upload-Symbol "⬆️ Karteikarten
+              importieren". Damit kannst du zuvor exportierte JSON-Dateien wieder in die App einlesen. Wähle die Datei
+              aus, um deine gespeicherten Karteikarten wiederherzustellen. ⚠️ Wichtig: Importieren geht nur wenn man Online ist!</p>
+          </div>
+
+          <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+            <h3>📱 Als Offline-App speichern (PWA in Chrome)</h3>
+            <p>Du kannst diese Web-App als Progressive Web App (PWA) in Chrome auf deinem Android-Smartphone speichern
+              und sie dann offline nutzen:</p>
+            <ol>
+              <li>Öffne diese Seite in Google Chrome auf deinem Smartphone.</li>
+              <li>Tippe auf das Menü-Symbol (drei Punkte) in der oberen rechten Ecke.</li>
+              <li>Wähle "Zum Startbildschirm hinzufügen".</li>
+              <li>Bestätige den Namen und tippe auf "Hinzufügen".</li>
+            </ol>
+            <p>Ein Icon der App wird zu deinem Startbildschirm hinzugefügt. Beim Öffnen läuft die App wie eine native
+              App und kann auch ohne Internetverbindung genutzt werden (sofern alle Daten bereits geladen wurden).</p>
+          </div>
+
+          <div
+            style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px; background-color: #fdecea; color: #8b0000;">
+            <h3>⚠️ Wichtiger Hinweis zur Datenspeicherung (LocalStorage)</h3>
+            <p>Diese App speichert deine Karteikarten lokal in deinem Browser (LocalStorage). Das bedeutet:</p>
+            <ul>
+              <li>**Daten sind geräteabhängig:** Wenn du die App auf einem anderen Gerät (z.B. einem anderen Computer
+                oder Smartphone) öffnest, sind deine erstellten Karteikarten dort nicht vorhanden.</li>
+              <li>**Datenverlust bei Browserdaten löschen:** Wenn du die Browserdaten (Cache, Cookies, Website-Daten)
+                löschst, gehen auch deine gespeicherten Karteikarten verloren.</li>
+              <li>**Keine Synchronisation:** Es gibt keine automatische Synchronisation deiner Daten zwischen
+                verschiedenen Geräten oder Browsern.</li>
+              <li>**Alle Karten Löschen-Button:** Dieser Button (auf Unterseite "Karte erstellen") löscht unwiderruflich
+                alle Karteikarten.
+                Bitte vorher die Daten exportieren.
+              </li>
+            </ul>
+            <p>Für eine langfristige Sicherung deiner Daten nutze bitte regelmäßig die Export-Funktion!</p>
+          </div>
+          <div style="font-size: 0.75rem; text-align: center; color: #555; background-color: #f8f8f8; padding: 0.75rem; box-shadow: 0 -1px 3px rgba(0,0,0,0.1);">
+            Created by Patrick Wiedenmann
+          </div>
+        </div>
+      </ons-page>
+    </template>
+
+    <template id="seite2.html">
+      <ons-page id="settingsPage">
+        <ons-toolbar>
+          <div class="center">Alle Karteikarten</div>
+        </ons-toolbar>
+
+        <div style="padding: 16px;">
+          <ons-input id="kartenSuche" type="search" placeholder="Suche nach Frage, Antwort oder Überschrift"
+            oninput="sucheKarteikarten(this.value)" style="width: 100%;"></ons-input>
+        </div>
+
+        <ons-list id="alleKartenListe">
+        </ons-list>
+
+        <ons-dialog id="karteikartenDialog" cancelable>
+          <div class="dialog-title" id="dialogTitel"></div>
+          <div class="dialog-content">
+            <strong>Frage:</strong>
+            <p id="dialogFrage"></p>
+            <strong>Antwort:</strong>
+            <p id="dialogAntwort"></p>
+            <small>Erstellt: <span id="dialogDatum"></span></small>
+            <input type="hidden" id="dialogThema"> <input type="hidden" id="dialogIndex">
+          </div>
+          <div class="dialog-buttonbar">
+            <ons-button modifier="destructive" onclick="loescheKarteikarte()">Löschen</ons-button>
+            <ons-button onclick="document.getElementById('karteikartenDialog').hide()">Schließen</ons-button>
+          </div>
+        </ons-dialog>
+
+        <ons-dialog id="confirmDialog" cancelable>
+          <div class="dialog-title">Karteikarte löschen?</div>
+          <div class="dialog-content">
+            Bist du sicher, dass du diese Karteikarte löschen möchtest? Dieser Vorgang kann nicht rückgängig gemacht
+            werden.
+          </div>
+          <div class="dialog-buttonbar">
+            <ons-button onclick="bestaetigeLoeschen()">Ja, löschen</ons-button>
+            <ons-button onclick="document.getElementById('confirmDialog').hide()">Nein, abbrechen</ons-button>
+          </div>
+        </ons-dialog>
+      </ons-page>
+    </template>
+
+    <template id="seite3.html">
+      <ons-navigator id="nvg" animation="slide" page="nav_liste.html"></ons-navigator>
+    </template>
+
+    <!-- Länder-Übersicht -->
+    <template id="nav_liste.html">
+      <ons-page>
+        <ons-toolbar>
+          <div class="center">Themengebiete</div>
+        </ons-toolbar>
+        <ons-list>
+          <ons-list-header style="background-color: rgba(65, 238, 53, 0.423);">Fachrichtungsübergreifende
+            berufsprofilgebende Fertigkeiten, Kenntnisse und Fähigkeiten</ons-list-header>
+          <ons-list-item tappable onclick="zeigeThema('Informieren und Beraten von Kunden')">Informieren und Beraten
+            von Kunden</ons-list-item>
+          <ons-list-item tappable onclick="zeigeThema('Entwickeln, Erstellen und Betreuen von IT-Lösungen')">Entwickeln,
+            Erstellen und
+            Betreuen von IT-Lösungen</ons-list-item>
+          <ons-list-item tappable
+            onclick="zeigeThema('Durchführen und Dokumentieren von qualitätssichernden Maßnahmen')">Durchführen und
+            Dokumentieren von qualitätssichernden Maßnahmen</ons-list-item>
+          <ons-list-item tappable
+            onclick="zeigeThema('Umsetzen, Integrieren und Prüfen von Maßnahmen zur IT-Sicherheit und zum Datenschutz')">Umsetzen,
+            Integrieren und Prüfen von Maßnahmen zur IT-Sicherheit und zum Datenschutz</ons-list-item>
+          <ons-list-header style="background-color: rgba(65, 238, 53, 0.423);">Berufsprofilgebende Fertigkeiten,
+            Kenntnisse und Fähigkeiten in der Fachrichtung Anwendungsentwicklung</ons-list-header>
+          <ons-list-item tappable onclick="zeigeThema('Betreiben von IT-Systemen')">Betreiben von
+            IT-Systemen</ons-list-item>
+          <ons-list-item tappable onclick="zeigeThema('Inbetriebnehmen von Speicherlösungen')">Inbetriebnehmen von
+            Speicherlösungen</ons-list-item>
+          <ons-list-item tappable onclick="zeigeThema('Programmieren von Softwarelösungen')">Programmieren von
+            Softwarelösungen</ons-list-item>
+          <ons-list-item tappable
+            onclick="zeigeThema('Konzipieren und Umsetzen von kundenspezifischen Softwareanwendungen')">Konzipieren
+            und Umsetzen von kundenspezifischen Softwareanwendungen</ons-list-item>
+          <ons-list-item tappable
+            onclick="zeigeThema('Sicherstellen der Qualität von Softwareanwendungen')">Sicherstellen der Qualität von
+            Softwareanwendungen</ons-list-item>
+          <ons-list-header style="background-color: rgba(65, 238, 53, 0.423);">Fachrichtungsüberbreifende, integrativ zu
+            vermittelnde Fähigkeiten, Kenntnisse und Fähigkeiten (Wirtschafts und Sozialkunde)</ons-list-header>
+          <ons-list-item tappable
+            onclick="zeigeThema('Beraufsausbildung sowie Arbeits- und Tarifrecht')">Beraufsausbildung sowie Arbeits-
+            und Tarifrecht</ons-list-item>
+          <ons-list-item tappable onclick="zeigeThema('Aufbau und Organisation des Ausbildungsbetriebes')">Aufbau und
+            Organisation des Ausbildungsbetriebes</ons-list-item>
+          <ons-list-item tappable onclick="zeigeThema('Sicherheit und Gesundheitsschutz bei der Arbeit')">Sicherheit
+            und Gesundheitsschutz bei der Arbeit</ons-list-item>
+          <ons-list-item tappable
+            onclick="zeigeThema('Umweltschutz, zur Vermeidung betriebsbedingter Umweltbelastungen beitragen')">Umweltschutz,
+            zur Vermeidung betriebsbedingter Umweltbelastungen beitragen</ons-list-item>
+          <ons-list-item tappable
+            onclick="zeigeThema('Vernetztes Zusammenarbeiten unter Nutzung digitaler Medien')">Vernetztes
+            Zusammenarbeiten unter Nutzung digitaler Medien</ons-list-item>
+        </ons-list>
+      </ons-page>
+    </template>
+
+    <!-- Unterthemen-Seite -->
+    <template id="unterthemen-seite.html">
+      <ons-page id="unterthemen-seite">
+        <ons-toolbar>
+          <div class="left"><ons-back-button></ons-back-button></div>
+          <div class="center" id="themen">Themen</div>
+        </ons-toolbar>
+        <ons-list id="unterthemenListe">
+          <!-- Wird dynamisch gefüllt -->
+        </ons-list>
+      </ons-page>
+    </template>
+
+    <template id="kartenAnzeigen.html">
+      <ons-page id="kartenAnzeigeSeite">
+        <ons-toolbar>
+          <div class="left">
+            <ons-back-button>Zurück</ons-back-button>
+          </div>
+          <div class="center" id="anzeigeTitel">Unterthema</div>
+        </ons-toolbar>
+
+        <section style="padding: 20px;" id="kartenListe">
+          <!-- Karten werden hier reingefügt -->
+        </section>
+      </ons-page>
+    </template>
+
+    <template id="seite4.html">
+      <ons-page id="karteikartenSeite">
+        <ons-toolbar>
+          <div class="center">Neue Karteikarte erstellen</div>
+        </ons-toolbar>
+
+        <section style="padding: 20px;">
+          <ons-list>
+            <ons-list-item>
+              <div class="center">
+                <select id="unterthemaAuswahl" style="width: 100%; padding: 8px;">
+                  <option value="">Unterthema wählen</option>
+                  <!-- Optionen werden dynamisch per JS ergänzt -->
+                </select>
+              </div>
+            </ons-list-item>
+
+            <ons-list-item>
+              <ons-input id="eingabe-ueberschrift" placeholder="Überschrift" float style="width: 100%;"></ons-input>
+            </ons-list-item>
+
+            <ons-list-item>
+              <div class="center">
+                <ons-input id="frageInput" float placeholder="Frage eingeben" style="width: 100%;"></ons-input>
+              </div>
+            </ons-list-item>
+
+            <ons-list-item>
+              <div class="center">
+                <ons-input id="antwortInput" float placeholder="Antwort eingeben" style="width: 100%;"></ons-input>
+              </div>
+            </ons-list-item>
+          </ons-list>
+
+          <p style="text-align:center; margin-top: 20px;">
+            <ons-button onclick="karteikarteSpeichern()">💾 Karteikarte speichern</ons-button>
+          </p>
+          <p style="text-align:center; margin-top: 20;">
+            <ons-button onclick="exportiereKarteikarten()">⬇️ Karteikarten exportieren</ons-button>
+          </p>
+          <p style="text-align:center; margin-top: 20px;">
+            <ons-button onclick="importiereKarteikarten()">
+              <ons-icon icon="fa-upload"></ons-icon> Karteikarten importieren
+            </ons-button>
+          </p>
+          <p style="text-align:center; margin-top: 40px;">
+            <ons-button onclick="alleDatenLöschen()" style="background-color: red; color: white;">
+              <ons-icon icon="md-delete"></ons-icon> Alle Karten löschen
+            </ons-button>
+          </p>
+        </section>
+      </ons-page>
+    </template>
+
+
+  </ons-page>
+
+</body>
+
+</html>

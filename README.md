@@ -1,6 +1,7 @@
 # KarteiKartenApp
 
-Eine Progressive Web App (PWA) zum Erstellen, Verwalten und Lernen mit digitalen Karteikarten, speziell entwickelt für mobile Geräte.
+Eine Progressive Web App (PWA) zum Erstellen, Verwalten und Lernen mit digitalen Karteikarten, speziell entwickelt für mobile Geräte. <br>
+Link: https://karteikartenapp.netlify.app
 
 ## 📱 Über die App
 
